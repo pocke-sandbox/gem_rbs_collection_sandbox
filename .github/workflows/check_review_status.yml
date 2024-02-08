@@ -3,6 +3,7 @@ name: 'Check review status'
 on:
   pull_request_review:
     types: [submitted, edited, dismissed]
+  pull_request: {}
 
 jobs:
   check_review_status:
