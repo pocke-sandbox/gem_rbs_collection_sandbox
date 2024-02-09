@@ -53,11 +53,33 @@ def all_gem_reviewers(changed_gems)
   changed_gems.flat_map { |gem| gem_reviewers(gem, BASE_SHA) }
 end
 
-reviewers = all_gem_reviewers(JSON.parse(ARGV[0]))
-unless can_merge_by?(ENV['COMMENTED_BY'], PR_AUTHOR, reviewers)
-  raise "You do not have permission to merge this PR."
+def comment_to_github(body, pr_number)
+  sh! 'gh', 'pr', 'comment', pr_number, '--body', body, '--repo', GH_REPO
 end
 
-unless approved?(JSON.parse(ARGV[0]), JSON.parse(ARGV[1]), ARGV[2])
-  raise "This PR is not approved yet."
+changed_gems = JSON.parse(ARGV[0])
+changed_non_gems = JSON.parse(ARGV[1])
+pr_number = ARGV[2]
+
+reviewers = all_gem_reviewers(JSON.parse(ARGV[0]))
+unless can_merge_by?(ENV['COMMENTED_BY'], PR_AUTHOR, reviewers)
+  body = <<~BODY
+    `/merge` command failed.
+
+    You do not have permission to merge this PR.
+    PR author, reviewers, and administrators can merge this PR.
+  BODY
+  comment_to_github(body, pr_number)
+  exit 1
+end
+
+unless approved?(changed_gems, changed_non_gems, pr_number)
+  body  = <<~BODY
+    `/merge` command failed.
+
+    This PR is not approved yet by the reviewers. Please get approval from the reviewers.
+    See the Actions tab for detail.
+  BODY
+  comment_to_github(body, pr_number)
+  exit 1
 end
