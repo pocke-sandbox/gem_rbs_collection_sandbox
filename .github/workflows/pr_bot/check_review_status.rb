@@ -23,24 +23,26 @@ end
 def main(changed_gems, changed_non_gems, pr_number)
   approvers = approvements(HEAD_SHA, pr_number).map { _1['user']['login'] }
 
-  status = 0
+  status = true
 
   # Check gem files
   not_approved_gems = changed_gems.reject { |gem| gem_accepted?(gem, approvers) }
   unless not_approved_gems.empty?
     puts "The following gems are not approved yet:"
     puts not_approved_gems.join("\n")
-    status = 1
+    status = false
   end
 
   # Check non gem files
   if !changed_non_gems.empty? && !non_gem_accepted?(approvers)
     puts "The following files are changed, but not approved by the admin yet:"
     puts changed_non_gems.join("\n")
-    status = 1
+    status = false
   end
 
   exit status
+
+  output :can_merge, JSON.generate(changed_non_gems)
 end
 
 changed_gems = JSON.parse(ARGV[0])
