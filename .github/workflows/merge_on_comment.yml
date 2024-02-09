@@ -45,11 +45,12 @@ jobs:
           HEAD_SHA: ${{ steps.pr_info.outputs.head_sha }}
           PR_AUTHOR: ${{ steps.pr_info.outputs.author }}
           CHANGED_GEMS: ${{ steps.changes.outputs.gems }}
+          CHANGED_NON_GEMS: ${{ steps.changes.outputs.non_gems }}
 
           COMMENTED_BY: ${{ github.event.issue.user.login }}
           PR_NUMBER: ${{ github.event.issue.number }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
         run: |
-          ruby .github/workflows/pr_bot/check_merge_ability.rb "$CHANGED_GEMS"
+          ruby .github/workflows/pr_bot/check_merge_ability.rb "$CHANGED_GEMS" "$CHANGED_NON_GEMS" "$PR_NUMBER"
           gh pr merge "$PR_NUMBER" --repo "$GH_REPO" --merge
