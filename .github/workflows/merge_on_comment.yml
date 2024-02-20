@@ -17,6 +17,10 @@ jobs:
           filter: 'blob:none'
           fetch-depth: 0
           ref: main
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
       - name: Fetch PR information
         id: pr_info
         env:
