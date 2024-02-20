@@ -47,4 +47,4 @@ jobs:
           COMMENT_BODY: ${{ steps.comment-body.outputs.comment_body }}
           REVIEWED_BY: ${{ github.event.review.user.login }}
         run:
-          gh pr comment "$PR_NUMBER" --body "test" --repo "$GH_REPO"
+          gh pr comment "$PR_NUMBER" --body "$COMMENT_BODY" --repo "$GH_REPO"
