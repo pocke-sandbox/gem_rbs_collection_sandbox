@@ -36,6 +36,7 @@ jobs:
           CHANGED_GEMS: ${{ steps.changes.outputs.gems }}
           CHANGED_NON_GEMS: ${{ steps.changes.outputs.non_gems }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          REVIEWED_BY: ${{ github.event.review.user.login }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ruby .github/workflows/pr_bot/review_result_comment_body.rb "$CHANGED_GEMS" "$CHANGED_NON_GEMS" "$PR_NUMBER"
@@ -45,6 +46,5 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
           COMMENT_BODY: ${{ steps.comment-body.outputs.comment_body }}
-          REVIEWED_BY: ${{ github.event.review.user.login }}
         run:
           gh pr comment "$PR_NUMBER" --body "$COMMENT_BODY" --repo "$GH_REPO"
