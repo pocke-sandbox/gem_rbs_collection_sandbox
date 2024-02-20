@@ -35,6 +35,7 @@ jobs:
         env:
           CHANGED_GEMS: ${{ steps.changes.outputs.gems }}
           CHANGED_NON_GEMS: ${{ steps.changes.outputs.non_gems }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           ruby .github/workflows/pr_bot/review_result_comment_body.rb "$CHANGED_GEMS" "$CHANGED_NON_GEMS"
       - name: Send a comment
