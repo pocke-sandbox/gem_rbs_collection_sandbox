@@ -8,4 +8,6 @@ module ActionCable
     class Base
     end
   end
+
+  type t = Integer
 end
