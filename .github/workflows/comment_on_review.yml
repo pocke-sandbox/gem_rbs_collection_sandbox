@@ -1,45 +1,22 @@
-name: 'Comment on new review'
+name: Comment on review
 
 on:
-  pull_request_review:
-    types: [submitted]
+  workflow_run:
+    workflows: [Generate comment body on review]
+    types: [completed]
+
 
 jobs:
-  create_comment:
-    if: github.event.review.state == 'APPROVED'
-    runs-on: 'ubuntu-latest'
+  comment:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
       pull-requests: write
-      contents: read
-    env:
-      BASE_SHA: ${{ github.event.pull_request.base.sha }}
-      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-      PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-      GH_REPO: ${{ github.repository }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Download artifact
         with:
-          filter: 'blob:none'
-          fetch-depth: 0
-          ref: main
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.3'
-          bundler-cache: true
-      - name: Changed gems and non gem files
-        id: changes
-        run: |
-          ruby .github/workflows/pr_bot/changed_files.rb
-      - name: Prepare comment body
-        id: comment-body
-        env:
-          CHANGED_GEMS: ${{ steps.changes.outputs.gems }}
-          CHANGED_NON_GEMS: ${{ steps.changes.outputs.non_gems }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          REVIEWED_BY: ${{ github.event.review.user.login }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          ruby .github/workflows/pr_bot/review_result_comment_body.rb "$CHANGED_GEMS" "$CHANGED_NON_GEMS" "$PR_NUMBER"
+          name: comment_body_on_review
+          run-id: ${{ github.event.workflow_run.id}}
       - name: Send a comment
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -47,4 +24,5 @@ jobs:
           GH_REPO: ${{ github.repository }}
           COMMENT_BODY: ${{ steps.comment-body.outputs.comment_body }}
         run:
-          gh pr comment "$PR_NUMBER" --body "$COMMENT_BODY" --repo "$GH_REPO"
+          gh pr comment "$PR_NUMBER" --body "$(cat COMMENT_BODY.txt)" --repo "$GH_REPO"
+

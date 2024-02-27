@@ -3,6 +3,7 @@ require_relative "./merge_ability"
 changed_gems = JSON.parse(ARGV[0])
 changed_non_gems = JSON.parse(ARGV[1])
 pr_number = ARGV[2]
+file = ARGV[3]
 
 ability = MergeAbility.new(changed_gems:, changed_non_gems:, pr_number:)
 
@@ -31,4 +32,4 @@ else
   msg << "Please get approval from the reviewers."
 end
 
-output :comment_body, msg
+File.write(file, msg)
