@@ -1,6 +1,10 @@
 require_relative "./utils"
 require_relative "./merge_ability"
 
+def comment_to_github(body, pr_number)
+  sh! 'gh', 'pr', 'comment', pr_number, '--body', body, '--repo', GH_REPO
+end
+
 changed_gems = JSON.parse(ARGV[0])
 changed_non_gems = JSON.parse(ARGV[1])
 pr_number = ARGV[2]
