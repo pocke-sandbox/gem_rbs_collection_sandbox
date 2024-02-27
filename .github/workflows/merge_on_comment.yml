@@ -8,8 +8,11 @@ jobs:
   is_merge_command:
     if: ${{ github.event.issue.pull_request }}
     runs-on: 'ubuntu-latest'
+    outputs:
+      is_merge_command: ${{ steps.set_is_merge_command.outputs.is_merge_command }}
     steps:
       - name: Set is_merge_command
+        id: set_is_merge_command
         env:
           COMMENT_BODY: ${{ github.event.comment.body }}
         run: |
