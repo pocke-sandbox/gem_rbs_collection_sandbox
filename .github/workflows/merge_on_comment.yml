@@ -5,8 +5,21 @@ on:
     types: [created]
 
 jobs:
+  is_merge_command:
+    if: ${{ github.event.issue.pull_request }}
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: Set is_merge_command
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          ruby -e '
+            is_merge_command = ENV["COMMENT_BODY"].match?(%r!\A/merge\s+\z!)
+            puts "is_merge_command=#{is_merge_command}"
+          '
   merge:
-    if: ${{ github.event.issue.pull_request && github.event.comment.body == '/merge' }}
+    needs: is_merge_command
+    if: ${{ needs.is_merge_command.outputs.is_merge_command == 'true' }}
     runs-on: 'ubuntu-latest'
     permissions:
       pull-requests: write
