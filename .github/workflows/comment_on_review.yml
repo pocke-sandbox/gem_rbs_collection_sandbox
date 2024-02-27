@@ -19,6 +19,7 @@ jobs:
         with:
           name: comment_body_on_review
           run-id: ${{ github.event.workflow_run.id}}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Send a comment
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
