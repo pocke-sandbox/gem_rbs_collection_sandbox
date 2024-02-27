@@ -19,7 +19,7 @@ jobs:
           '
   merge:
     needs: is_merge_command
-    if: ${{ needs.is_merge_command.outputs.is_merge_command == 'true' }}
+    if: ${{ needs.is_merge_command.outputs.is_merge_command }}
     runs-on: 'ubuntu-latest'
     permissions:
       pull-requests: write
