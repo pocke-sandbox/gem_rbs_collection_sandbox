@@ -16,7 +16,7 @@ jobs:
           ruby -e '
             is_merge_command = ENV["COMMENT_BODY"].match?(%r!\A/merge\s+\z!)
             puts "is_merge_command=#{is_merge_command}"
-          '
+          ' >> $GITHUB_OUTPUT
   merge:
     needs: is_merge_command
     if: ${{ needs.is_merge_command.outputs.is_merge_command }}
