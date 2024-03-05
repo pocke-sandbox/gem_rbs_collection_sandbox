@@ -45,4 +45,6 @@ class GlobalID
   def to_s: () -> String
 
   def deconstruct_keys: (top _keys) -> { app: String, model_name: String, model_id: String, params: Hash[untyped, untyped]? }
+
+  type t = String
 end
