@@ -14,7 +14,7 @@ on:
 
 jobs:
   create_comment:
-    if: github.event.review.state == 'APPROVED'
+    if: github.event.review.state != 'CHANGES_REQUESTED'
     runs-on: 'ubuntu-latest'
     env:
       BASE_SHA: ${{ github.event.pull_request.base.sha }}
