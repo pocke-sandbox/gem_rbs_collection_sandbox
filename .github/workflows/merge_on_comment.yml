@@ -17,7 +17,7 @@ jobs:
           COMMENT_BODY: ${{ github.event.comment.body }}
         run: |
           ruby -e '
-            is_merge_command = ENV["COMMENT_BODY"].match?(%r!\A/merge\s+\z!)
+            is_merge_command = ENV["COMMENT_BODY"].match?(%r!\A/merge\s*\z!)
             puts "is_merge_command=#{is_merge_command}"
           ' >> $GITHUB_OUTPUT
   merge:
