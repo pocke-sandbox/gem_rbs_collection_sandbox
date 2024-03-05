@@ -71,5 +71,5 @@ module AST
     def s: (_ToSym `type`, *untyped children) -> Node
   end
 
-  type t = String
+  type x = 42
 end
